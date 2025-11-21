@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUMEDIA Moderation Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">RUMEDIA · Панель модератора</div>
+      <div class="pill">Новый интерфейс</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Работа с очередями</p>
+          <h1>Легкое управление релизами</h1>
+          <p class="lede">Выбирайте источник (премиум или сингл) и получайте только нужные поля: обложку, исполнителя, название, жанр, дату загрузки, действия и плеер.</p>
+          <div class="controls">
+            <button class="toggle active" data-source="premium">Очередь премиумов</button>
+            <button class="toggle" data-source="singles">Очередь синглов</button>
+            <button class="ghost" id="refresh">Обновить</button>
+          </div>
+          <p class="hint">Источники: <a href="https://rumedia.io/media/admin-cp/manage-songs?check_pro=1" target="_blank">премиум</a> · <a href="https://rumedia.io/media/admin-cp/manage-songs?check=1" target="_blank">синглы</a></p>
+        </div>
+        <div class="status">
+          <div class="stat-card">
+            <p>Последнее обновление</p>
+            <h3 id="timestamp">—</h3>
+          </div>
+          <div class="stat-card">
+            <p>Загружено карточек</p>
+            <h3 id="loaded">0</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" id="tracks"></section>
+
+      <div class="empty" id="empty-state" hidden>
+        <h3>Данные пока не получены</h3>
+        <p>Нажмите «Обновить» или смените источник.</p>
+      </div>
+
+      <div class="toast" id="toast" hidden></div>
+    </main>
+  </div>
+  <script src="assets/app.js"></script>
+</body>
+</html>
