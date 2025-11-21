@@ -27,7 +27,14 @@
             <button class="toggle" data-source="singles">Очередь синглов</button>
             <button class="ghost" id="refresh">Обновить</button>
           </div>
-          <p class="hint">Источники: <a href="https://rumedia.io/media/admin-cp/manage-songs?check_pro=1" target="_blank">премиум</a> · <a href="https://rumedia.io/media/admin-cp/manage-songs?check=1" target="_blank">синглы</a></p>
+          <div class="session-bar">
+            <label for="session">PHPSESSID для доступа в админку</label>
+            <div class="session-input">
+              <input id="session" type="text" placeholder="например 82013a22d081c9e1047758a92c04d081">
+              <button id="save-session" class="ghost">Сохранить</button>
+            </div>
+            <p class="hint">Источники: <a href="https://rumedia.io/media/admin-cp/manage-songs?check_pro=1" target="_blank">премиум</a> · <a href="https://rumedia.io/media/admin-cp/manage-songs?check=1" target="_blank">синглы</a></p>
+          </div>
         </div>
         <div class="status">
           <div class="stat-card">

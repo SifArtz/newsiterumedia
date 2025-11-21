@@ -95,6 +95,45 @@ h1 {
   margin: 0 0 12px;
 }
 
+.session-bar {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.session-bar label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.session-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.session-input input {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+}
+
+.session-input input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.session-input button {
+  white-space: nowrap;
+}
+
 .toggle,
 .ghost {
   border: 1px solid rgba(255, 255, 255, 0.12);

@@ -9,15 +9,36 @@ const emptyState = document.getElementById('empty-state');
 const toast = document.getElementById('toast');
 const timestamp = document.getElementById('timestamp');
 const loaded = document.getElementById('loaded');
+const sessionInput = document.getElementById('session');
+const saveSession = document.getElementById('save-session');
 let currentSource = 'premium';
+let sessionId = localStorage.getItem('rumedia_session') || '';
+
+if (sessionId) {
+  sessionInput.value = sessionId;
+}
+
+saveSession.addEventListener('click', () => {
+  sessionId = sessionInput.value.trim();
+  if (sessionId) {
+    localStorage.setItem('rumedia_session', sessionId);
+    showToast('PHPSESSID сохранён');
+  } else {
+    localStorage.removeItem('rumedia_session');
+    showToast('PHPSESSID очищен');
+  }
+});
 
 async function fetchHtml(url) {
+  const target = sessionId
+    ? `${url}${url.includes('?') ? '&' : '?'}PHPSESSID=${encodeURIComponent(sessionId)}`
+    : url;
   try {
-    const response = await fetch(url, { mode: 'cors' });
+    const response = await fetch(target, { mode: 'cors', credentials: 'include' });
     if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
     return await response.text();
   } catch (error) {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
     const proxyResponse = await fetch(proxyUrl);
     if (!proxyResponse.ok) {
       throw new Error('Не удалось получить данные: проверьте доступ к источнику или CORS.');
