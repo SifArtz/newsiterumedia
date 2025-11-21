@@ -12,9 +12,18 @@ const loaded = document.getElementById('loaded');
 let currentSource = 'premium';
 
 async function fetchHtml(url) {
-  const response = await fetch(url, { mode: 'cors' });
-  if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
-  return await response.text();
+  try {
+    const response = await fetch(url, { mode: 'cors' });
+    if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
+    return await response.text();
+  } catch (error) {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const proxyResponse = await fetch(proxyUrl);
+    if (!proxyResponse.ok) {
+      throw new Error('Не удалось получить данные: проверьте доступ к источнику или CORS.');
+    }
+    return await proxyResponse.text();
+  }
 }
 
 function extractFirstText(node) {
