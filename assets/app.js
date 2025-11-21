@@ -3,6 +3,8 @@ const endpoints = {
   singles: 'https://rumedia.io/media/admin-cp/manage-songs?check=1'
 };
 
+const proxyEndpoint = 'proxy.php';
+
 const toggles = document.querySelectorAll('.toggle');
 const trackGrid = document.getElementById('tracks');
 const emptyState = document.getElementById('empty-state');
@@ -29,22 +31,49 @@ saveSession.addEventListener('click', () => {
   }
 });
 
-async function fetchHtml(url) {
+async function fetchDirect(url) {
   const target = sessionId
     ? `${url}${url.includes('?') ? '&' : '?'}PHPSESSID=${encodeURIComponent(sessionId)}`
     : url;
-  try {
-    const response = await fetch(target, { mode: 'cors', credentials: 'include' });
-    if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
-    return await response.text();
-  } catch (error) {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
-    const proxyResponse = await fetch(proxyUrl);
-    if (!proxyResponse.ok) {
-      throw new Error('Не удалось получить данные: проверьте доступ к источнику или CORS.');
+  const response = await fetch(target, { mode: 'cors', credentials: 'include' });
+  if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
+  return response.text();
+}
+
+async function fetchViaProxy(url) {
+  const searchParams = new URLSearchParams({ url });
+  if (sessionId) searchParams.set('phpsessid', sessionId);
+  const proxyUrl = `${proxyEndpoint}?${searchParams.toString()}`;
+  const response = await fetch(proxyUrl);
+  if (!response.ok) throw new Error('Прокси недоступен');
+  return response.text();
+}
+
+async function fetchAllOrigins(url) {
+  const target = sessionId
+    ? `${url}${url.includes('?') ? '&' : '?'}PHPSESSID=${encodeURIComponent(sessionId)}`
+    : url;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
+  const response = await fetch(proxyUrl);
+  if (!response.ok) throw new Error('Не удалось получить данные: проверьте доступ к источнику или CORS.');
+  return response.text();
+}
+
+async function fetchHtml(url) {
+  const attempts = [];
+  if (sessionId) attempts.push(() => fetchViaProxy(url));
+  attempts.push(() => fetchDirect(url));
+  attempts.push(() => fetchViaProxy(url));
+  attempts.push(() => fetchAllOrigins(url));
+
+  for (const attempt of attempts) {
+    try {
+      return await attempt();
+    } catch (error) {
+      console.warn('Fetch attempt failed:', error.message);
     }
-    return await proxyResponse.text();
   }
+  throw new Error('Все попытки загрузки завершились неудачей');
 }
 
 function extractFirstText(node) {
